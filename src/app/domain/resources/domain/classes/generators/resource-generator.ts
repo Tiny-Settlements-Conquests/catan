@@ -1,7 +1,8 @@
 
 import { Field } from "../../../../playground/domain/classes/field";
 import { PlaygroundDimensions } from "../../../../playground/domain/models/playground.model";
-import { ResourceField, ResourceType } from "../../models/resource-field.model";
+import { ResourceField } from "../../models/resource-field.model";
+import { ResourceType } from "../../models/resources.model";
 import { BrickResourceField } from "../fields/brick-resource-field";
 import { SheepResourceField } from "../fields/sheep-resource-field";
 import { StoneResourceField } from "../fields/stone-resource-field";

@@ -1,5 +1,9 @@
-<app-action-card [mode]="mode" class="absolute top-[0px] brightness-50" />
-<app-action-card [mode]="mode" class="absolute top-[6px] brightness-75" />
+@if(count > 2) {
+    <app-action-card [mode]="mode" class="absolute top-[0px] brightness-50" />
+}
+@if(count > 1) {
+    <app-action-card [mode]="mode" class="absolute top-[6px] brightness-75" />
+}
 <app-action-card [mode]="mode" [count]="count" class="absolute top-[12px]" >
     <ng-content />
 </app-action-card>

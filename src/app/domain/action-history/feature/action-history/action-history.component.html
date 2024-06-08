@@ -36,6 +36,26 @@
                 <span>Has placed:</span>
                 <img class="ml-auto w-12" src='assets/buildings/{{action.building}}.png' />
             }
+            @if (action.typ === 'trade'){
+                <img 
+                    class="rounded-full w-8 h-8 border-1" 
+                    [src]="action.playerA.profileUrl" 
+                />
+                <span>gave:</span>
+                
+                @for (card of action.givenResources; track $index) {
+                    <img class="w-6 h-6"  [src]="card.imageUrl" />
+                }
+
+                <img 
+                    class="rounded-full w-8 h-8 border-1" 
+                    [src]="action.playerB.profileUrl" 
+                />
+                <span>and received</span>
+                @for (card of action.receivedResources; track $index) {
+                    <img class="w-6 h-6"  [src]="card.imageUrl" />
+                }
+            }
             </div>
         }
     </div>

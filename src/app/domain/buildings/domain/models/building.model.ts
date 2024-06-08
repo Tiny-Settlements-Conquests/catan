@@ -1,6 +1,5 @@
 import { GraphNode } from "../../../graph/domain/classes/graph-node";
 import { Player } from "../../../player/domain/classes/player";
-import { ResourceType } from "../../../resources/domain/models/resource-field.model";
 
 /**
  * @deprecated replace by BuildingTyp

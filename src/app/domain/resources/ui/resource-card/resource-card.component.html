@@ -1,0 +1,5 @@
+@if(resourceCard() !== undefined) {
+    <app-action-card [mode]="resourceCardMode()">
+        <img [src]="resourceCard()?.imageUrl" class="absolute w-10 h-10" />
+    </app-action-card>
+}

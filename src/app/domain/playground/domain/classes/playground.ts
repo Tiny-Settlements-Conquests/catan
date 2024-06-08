@@ -11,6 +11,8 @@ export interface PlaygroundRenderer {
   render(grid: Field[], resources: ResourceField[]): void;
 }
 
+
+//todo hier brauchen wir noch eine struktur die einfacher die fields und die graphNodes miteinander verknüpft
 export class Playground {
   public get graph(): Graph {
     return this._gridGraph;

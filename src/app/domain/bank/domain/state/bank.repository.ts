@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { createStore, withProps } from '@ngneat/elf';
-import { ResourceType } from '../../../resources/domain/models/resource-field.model';
-import { Inventory } from '../../../inventory/domain/models/inventory.model';
+import { ResourceType, Resources } from '../../../resources/domain/models/resources.model';
 
 const bankStore = createStore(
     { name: 'bank' },
-    withProps<Inventory>({
+    withProps<Resources>({
         bricks:25,
         stone: 20,
         straw: 25,
@@ -31,7 +30,7 @@ export class BankRepository {
     return bankStore.query(state => state);
   }
 
-  public setInventory(inventory: Inventory) {
+  public setInventory(inventory: Resources) {
     bankStore.update(state => ({...inventory }));
   }
 }

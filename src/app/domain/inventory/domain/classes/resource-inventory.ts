@@ -1,12 +1,6 @@
+import { Resources } from "../../../resources/domain/models/resources.model";
 import { Inventory } from "./inventory";
 
-type Resources = {
-    straw: number,
-    stone: number,
-    wool: number,
-    bricks: number,
-    wood: number
-}
 export class ResourceInventory extends Inventory<Resources>{
 
   constructor(_resources = {

@@ -27,6 +27,7 @@ import { RoundCountdownComponent } from '../../domain/round/feature/round-countd
 import { RoundPlayerCardsComponent } from '../../domain/round/feature/round-player-cards/round-player-cards.component';
 import { TradeCardComponent } from '../../domain/trade/feature/trade-card/trade-card.component';
 import { UserRepository } from '../../domain/user/domain/state/user.repository';
+import { TradeMenuComponent } from '../../domain/trade/feature/trade-menu/trade-menu.component';
 
 
 
@@ -49,7 +50,8 @@ import { UserRepository } from '../../domain/user/domain/state/user.repository';
     BankComponent,
     DiceRandomNumberComponent,
     DiceOverlayComponent,
-    RoundCountdownComponent
+    RoundCountdownComponent,
+    TradeMenuComponent
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss',

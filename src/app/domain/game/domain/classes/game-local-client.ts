@@ -22,7 +22,7 @@ import { PlaygroundGenerator } from "../../../playground/domain/generators/playg
 import { PlaygroundGraphGenerator } from "../../../playground/domain/generators/playground-graph-generator";
 import { PlaygroundGridGenerator } from "../../../playground/domain/generators/playground-grid-generator";
 import { ResourceGenerator } from "../../../resources/domain/classes/generators/resource-generator";
-import { resourceTypeToResourceCard } from "../../../resources/function/resource-type.function";
+import { resourceTypeToResourceCard, resourcesToResourceCards } from "../../../resources/domain/function/resource-type.function";
 import { Round } from "../../../round/domain/classes/round";
 import { RoundPlayer } from "../../../round/domain/models/round-player.model";
 import { RoundCountdownActions } from "../../../round/domain/state/countdown/round-countdown.actions";
@@ -33,6 +33,8 @@ import { Game } from "./game";
 import { BuildingFactory } from "../../../buildings/domain/factories/building.factory";
 import { DiceRoller } from "../../../dice/domain/classes/dice-roller";
 import { ResourceDistributor } from "../../../resources/domain/classes/resources/resource-distributor";
+import { RobberManager } from "../../../robber/domain/classes/robber-manager";
+import { TradeManager } from "../../../trade/domain/classes/trade-manager";
 
 export class GameLocalClient {
   private _game: Game
@@ -56,8 +58,26 @@ export class GameLocalClient {
     private _destroyRef: DestroyRef,
   ) { 
     this._game = this.generateGame();
-    this.syncStates();
-    this.simulateGame();
+    // this.syncStates();
+    // this.simulateGame();
+    this._userRepository.selectUser().pipe(
+      map((me) => {
+        if(me) {
+          const player = this.game.round.getPlayerById(me.id)
+          if(player) {
+            this._inventoryRepository.setResources(player.resourceInventory.resources)
+          }
+        }
+        return this.game?.round.players.find((u) => u.id === me?.id)
+      }),
+      switchMap((me) => {
+        return this.game.selectUserInventoryUpdate().pipe(
+          filter(({player}) => player.id === me?.id)
+        );
+      })
+    ).subscribe(({newAmount, type}) => {
+      this._inventoryRepository.updateResourceAmount(type, newAmount);
+    })
   }
 
   private simulateGame() {
@@ -220,11 +240,69 @@ export class GameLocalClient {
         round,
         buildCostManager,
         diceRoller,
-        resourceDistributor
+        resourceDistributor,
+        robberManager: new RobberManager(playground),
+        tradeManager: new TradeManager(bankInventory, round)
       }
     );
 
-	return game;
+    //TODO FIX ROBTEST
+    // const field = game.playground.gridField.find((f) => (f.polygon.points.find((p) => game.playground.buildingGraph.getNodeByPoint(p))? f : false))
+    // console.log("FIELD", field);
+    // if(field) {
+    //   game.robTest(round.players[0], field)
+    // } 
+    const trade = game.tradeTest();
+    trade.selectTradeOfferStarted.subscribe((data) => {
+      console.log("TRADE STARTED", data);
+    })
+    trade.selectTradeCancel.subscribe((data)=> {
+      console.log("TRADE CANCELED!!!", data)
+      console.log(trade);
+    })
+
+    trade.selectTradeResponse.subscribe((data) => console.log("JAJAJAAJJAJA" , data))
+
+    trade.selectTradeCompleted.subscribe((data)=> {
+      console.log("ALLES FERDDISCCHHH", data)
+      console.log("TESTTTTTTTTTTTTTTT");
+      dispatch(
+        ActionHistoryActions.addAction({
+          typ: 'trade',
+          id: Math.random().toString(),
+          playerA: data.trade.player,
+          playerB: data.acceptedPlayer,
+          givenResources: resourcesToResourceCards(data.trade.offeredResources),
+          receivedResources: resourcesToResourceCards(data.trade.requestedResources),
+        })
+      )
+    })
+
+    trade.startTrade({
+      id: "1",
+      offeredResources: {
+        wood: 1
+      },
+      player: round.players[0],
+      requestedResources: {
+        wood: 7
+      }
+    })
+
+    setTimeout(() => {
+      trade.respondToTrade({
+        tradeId: "1",
+        respondedPlayer: round.players[1],
+        accepted: true
+      })
+    }, 2000)
+
+    // setTimeout(() => {
+    //   trade.cancelTrade("1")
+    // }, 3000)
+
+    
+	  return game;
   }
 
   private generateRound(roundPlayers: RoundPlayer[]) {
@@ -260,6 +338,12 @@ export class GameLocalClient {
         buildingNode?.tryBuild(buildingFactory.constructBuilding(BuildingType.TOWN, activePlayer, buildingNode))
       } catch(e) {}
     }
+    const loc = playground.graph.nodes[32]
+    playground.buildingGraph.tryAddNode(new GraphBuildingNode("32",loc.position , players[1]));
+    const buildingNode = playground.buildingGraph.getNodeById("32");
+    buildingNode?.tryBuild(buildingFactory.constructBuilding(BuildingType.TOWN, players[1], buildingNode))
+    console.log("LOC", loc);
+    console.log("BUILDINGNODEH", buildingNode);
 
   }
 

@@ -1,0 +1,43 @@
+<app-block class=" grow-1 flex gap-2 items-center">
+    @for (resourceType of resourceTypes; track $index) {
+        <app-resource-card [resourceType]='resourceType' (click)="addResource(resourceType)" />
+    }
+    <img class="w-12 h-12 mx-3" src="/assets/buildings/bank.png" />
+</app-block>
+<app-block class=" grow-1 flex flex-col gap-12">
+    <div class="flex gap-4 items-center">
+        <div class="relative h-fit">
+            <img class="rounded-full w-12 h-12 border-1" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO2F0VxhmZzAFM54PA95eDdtkEtHlZDga9ew&usqp=CAU" />
+            <fa-icon [icon]="icons.down" class="absolute -bottom-4 left-0 text-green-500 text-xl" />
+        </div>
+        <div class="flex flex-row">
+            @for (item of requestedResources(); track $index) {
+                <app-action-card-stack [mode]="item.mode" [count]="item.amount" (click)="removeResource(item.card.typ)">
+                    <img [src]="item.card.imageUrl" class="absolute w-10 h-8" />
+                </app-action-card-stack>
+            }
+        </div>
+    </div>
+    <div class="flex gap-4 items-center">
+        <div class="relative h-fit">
+            <img class="rounded-full w-12 h-12 border-1" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO2F0VxhmZzAFM54PA95eDdtkEtHlZDga9ew&usqp=CAU" />
+            <fa-icon [icon]="icons.up" class="absolute -top-4 left-0 text-red-500 text-xl" />
+        </div>
+        <div class="flex flex-row">
+            @for (item of offeredResources(); track $index) {
+                <app-action-card-stack [mode]="item.mode" [count]="item.amount" (click)="removeOfferedResource(item.card.typ)">
+                    <img [src]="item.card.imageUrl" class="absolute w-10 h-8" />
+                </app-action-card-stack>
+            }
+        </div>
+    </div>
+</app-block>
+<app-block>
+    <div class="p-2 flex">
+        @for (item of resources(); track $index) {
+            <app-action-card-stack [mode]="item.mode" [count]="item.amount" (click)="addOfferedResource(item.card.typ)">
+                <img [src]="item.card.imageUrl" class="absolute w-10 h-8" />
+            </app-action-card-stack>
+        }
+    </div>
+</app-block>

@@ -1,7 +1,7 @@
 import { PlaceableType } from "../../../buildings/domain/models/building.model";
 import { Dices } from "../../../dice/domain/models/dice.model";
 import { Player } from "../../../player/domain/classes/player";
-import { ResourceCard } from "../../../resources/domain/models/resource-field.model";
+import { ResourceCard } from "../../../resources/domain/models/resource-card.model";
 
 export type HistoryAction = (BuildAction | TradeAction | DiceAction | ResourceAction) & { id: string };
 

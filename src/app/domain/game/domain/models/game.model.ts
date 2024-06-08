@@ -5,7 +5,9 @@ import { DiceRoller } from "../../../dice/domain/classes/dice-roller";
 import { ResourceInventory } from "../../../inventory/domain/classes/resource-inventory";
 import { Playground } from "../../../playground/domain/classes/playground";
 import { ResourceDistributor } from "../../../resources/domain/classes/resources/resource-distributor";
+import { RobberManager } from "../../../robber/domain/classes/robber-manager";
 import { Round } from "../../../round/domain/classes/round";
+import { TradeManager } from "../../../trade/domain/classes/trade-manager";
 
 export interface GameConfig {
     resourceMultiplier: number,
@@ -26,4 +28,6 @@ export interface GameDependencies {
     buildCostManager: BuildCostManager,
     diceRoller: DiceRoller,
     resourceDistributor: ResourceDistributor,
+    robberManager: RobberManager,
+    tradeManager: TradeManager
   }

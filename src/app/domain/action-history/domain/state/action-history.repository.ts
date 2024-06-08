@@ -22,6 +22,7 @@ export class ActionHistoryRepository {
     }
 
     public addAction(action: HistoryAction) {
+        console.log("TYPE", action.typ);
         actionHistoryStore.update(addEntitiesFifo(action, { limit: 20 }));
     }
 

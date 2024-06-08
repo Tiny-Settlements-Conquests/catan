@@ -13,6 +13,10 @@ import { GameDependencies, GameConfig } from "../models/game.model";
 import { Building, BuildingType, PathBuilding, PathType } from "../../../buildings/domain/models/building.model";
 import { DiceRoller } from "../../../dice/domain/classes/dice-roller";
 import { ResourceDistributor } from "../../../resources/domain/classes/resources/resource-distributor";
+import { Field } from "../../../playground/domain/classes/field";
+import { RobberManager } from "../../../robber/domain/classes/robber-manager";
+import { Player } from "../../../player/domain/classes/player";
+import { TradeManager } from "../../../trade/domain/classes/trade-manager";
 
 
 export class Game {
@@ -24,6 +28,8 @@ export class Game {
   private readonly _costManager: BuildCostManager;
   private readonly _diceRoller: DiceRoller;
   private readonly _resourceDistributor: ResourceDistributor;
+  private readonly _robberManager: RobberManager;
+  private readonly _tradeManager: TradeManager;
 
   private _mode: GameMode = 'city';
   
@@ -40,7 +46,7 @@ export class Game {
       maxCitiesPerPlayer: 5,
       maxRoadsPerPlayer: 15,
       maxRollTimer: 5_000,
-      maxRoundTimer: 10_000,
+      maxRoundTimer: 1_000_000,
       maxTownsPerPlayer: 5,
       winPoints: 10,
       resourceMultiplier: 1
@@ -54,6 +60,8 @@ export class Game {
     this._costManager = dependencies.buildCostManager;
     this._diceRoller = dependencies.diceRoller;
     this._resourceDistributor = dependencies.resourceDistributor;
+    this._robberManager = dependencies.robberManager;
+    this._tradeManager = dependencies.tradeManager;
     this.startGame();
   }
 
@@ -87,6 +95,7 @@ export class Game {
   }
 
   private startRoundTimers() {
+    this._diceRoller.resetRoll()
     this.startRollTimer().pipe(
       takeUntil(this._pauseSignal),
       switchMap(() => {
@@ -260,6 +269,19 @@ export class Game {
       owner: player
     })
 
+  }
+
+  robTest(player: Player, field: Field) {
+    try {
+      this._robberManager.playerRobsAtPosition(player,field);
+
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  tradeTest() {
+    return this._tradeManager
   }
 
 }

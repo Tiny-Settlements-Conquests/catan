@@ -1,5 +1,4 @@
 import { BehaviorSubject, Subject } from "rxjs";
-import { ResourceType } from "../../../resources/domain/models/resource-field.model";
 
 interface StorageUpdate<T> {
   type: T;
@@ -20,6 +19,7 @@ export abstract class Inventory<T extends {[key: string | number]: number}> {
   public addToInventory<K extends keyof T>(key: K, value: number) {
     const newAmount = (this._inventory.value[key] ?? 0) + value;
     const oldAmount = this._inventory.value[key] ?? 0;
+    if(newAmount < 0) throw new Error('Cannot add negative amount to inventory');
 
     this._inventoryUpdate.next({
       type: key,
@@ -36,6 +36,8 @@ export abstract class Inventory<T extends {[key: string | number]: number}> {
   public removeFromInventory<K extends keyof T>(key: K, value: number) {
     const newAmount = (this._inventory.value[key] ?? 0) - value;
     const oldAmount = this._inventory.value[key] ?? 0;
+    if(newAmount < 0) throw new Error('Cannot add negative amount to inventory');
+
     this._inventoryUpdate.next({
       type: key,
       amount: value,
@@ -54,6 +56,10 @@ export abstract class Inventory<T extends {[key: string | number]: number}> {
 
   public selectInventoryUpdate() {
     return this._inventoryUpdate;
+  }
+
+  public setInventory(inventory: T) {
+    this._inventory.next(inventory);
   }
   
 }
